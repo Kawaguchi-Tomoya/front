@@ -39,6 +39,7 @@ export function CreatePinModal({ user, onClose, onCreate, initialLatitude, initi
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // ファイルが選択された時の処理
+  /*
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
@@ -55,13 +56,34 @@ export function CreatePinModal({ user, onClose, onCreate, initialLatitude, initi
     
     // 同じファイルを再度選択できるようにリセット
     e.target.value = '';
+  };*/
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+  
+    const newImages: string[] = [];
+    const previewUrls: string[] = [];
+  
+    for (const file of Array.from(files)) {
+      // プレビュー用
+      previewUrls.push(URL.createObjectURL(file));
+      
+      // バックエンド送信用のBase64変換 (方法Aの場合)
+      const base64 = await fileToBase64(file);
+      newImages.push(base64);
+    }
+  
+    // プレビューとデータ保持を分けるか、両方管理する必要があります
+    setImages((prev) => [...prev, ...newImages]); 
+    e.target.value = '';
   };
 
   // ボタンがクリックされた時に隠しinputをクリックさせる
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
-
+  /*
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -93,10 +115,61 @@ export function CreatePinModal({ user, onClose, onCreate, initialLatitude, initi
     });
 
     toast.success('投稿しました！');
+  };*/
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!title.trim()) {
+      toast.error('タイトルを入力してください');
+      return;
+    }
+
+    if (!description.trim()) {
+      toast.error('説明を入力してください');
+      return;
+    }
+
+    const lat = parseFloat(latitude);
+    const lng = parseFloat(longitude);
+
+    if (isNaN(lat) || isNaN(lng)) {
+      toast.error('有効な位置情報を入力してください');
+      return;
+    }
+  
+    // 送信前に数値を確定させる
+    //const lat = parseFloat(latitude);
+    //const lng = parseFloat(longitude);
+  
+    // バックエンドへAPIリクエスト (onCreateの中でfetchを呼ぶ想定)
+    try {
+      await onCreate({
+        latitude: lat,
+        longitude: lng,
+        title,
+        description,
+        genre,
+        images, // Base64の配列
+      });
+      toast.success('投稿しました！');
+      onClose();
+    } catch (error) {
+      toast.error('投稿に失敗しました');
+    }
   };
 
   const handleRemoveImage = (index: number) => {
     setImages(images.filter((_, i) => i !== index));
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
   };
 
   return (

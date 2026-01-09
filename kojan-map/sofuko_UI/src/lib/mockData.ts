@@ -19,8 +19,9 @@ export const genreLabels: Record<PinGenre, string> = {
 };
 
 // モックピンデータ
+
 export const mockPins: Pin[] = [
-  {
+  /*{
     id: 'pin1',
     userId: 'user1',
     userName: '匿名',
@@ -113,7 +114,7 @@ export const mockPins: Pin[] = [
     reactions: 34,
     createdAt: new Date('2025-10-29T17:45:00'),
     viewCount: 523,
-  },
+  },*/
 ];
 
 // モック問い合わせデータ
@@ -129,7 +130,8 @@ export type Inquiry = {
 };
 
 export const mockInquiries: Inquiry[] = [
+  /*
   { id: 'q1', fromName: '佐藤花子', email: 'sato@example.com', role: 'general', message: 'アプリの使い方について教えてください。', date: '2025-11-12', status: 'open' },
   { id: 'q2', fromName: '山田商店', email: 'yamadashouten@example.com', role: 'business', message: '事業者登録について質問があります。', date: '2025-11-10', status: 'open' },
-  { id: 'q3', fromName: '田中太郎', email: 'tanaka@example.com', role: 'general', message: '投稿が反映されません。', date: '2025-11-08', status: 'responded' },
+  { id: 'q3', fromName: '田中太郎', email: 'tanaka@example.com', role: 'general', message: '投稿が反映されません。', date: '2025-11-08', status: 'responded' },*/
 ];

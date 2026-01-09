@@ -17,14 +17,14 @@ interface MapViewProps {
 
 export function MapView({ pins, onPinClick, onMapDoubleClick, isOverlayOpen }: MapViewProps) {
   const [hoveredPinId, setHoveredPinId] = useState<string | null>(null);
-
+  {/*
   const createCustomIcon = (pin: Pin, isHovered: boolean) => {
     const color = genreColors[pin.genre];
     const size = "w-10 h-10"; 
 
     const iconHtml = renderToString(
       <div className={`relative transition-all duration-300 ${isHovered ? 'scale-110 -translate-y-2' : ''}`}>
-        {/* ピンの影 */}
+        {/* ピンの影 */}{/*
         <div className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 rounded-full bg-black/20 blur-sm transition-all ${isHovered ? 'w-8 h-3' : 'w-6 h-2'}`} />
 
         {pin.userRole === 'business' ? (
@@ -70,6 +70,54 @@ export function MapView({ pins, onPinClick, onMapDoubleClick, isOverlayOpen }: M
       </div>
     );
 
+    return L.divIcon({
+      html: iconHtml,
+      className: '', 
+      iconSize: [40, 40],
+      iconAnchor: [20, 40], 
+    });
+  };*/}
+
+  const createCustomIcon = (pin: Pin, isHovered: boolean) => {
+    const color = genreColors[pin.genre];
+    // 50件以上の場合はサイズを少し大きくする
+    const size = pin.isHot ? "w-12 h-12" : "w-10 h-10"; 
+  
+    const iconHtml = renderToString(
+      <div className={`relative transition-all duration-300 ${isHovered ? 'scale-110 -translate-y-2' : ''}`}>
+        {/* 50件以上(isHot)の場合の特別背景エフェクト */}
+        {pin.isHot && (
+          <div className="absolute -inset-4 bg-orange-500/20 rounded-full animate-pulse blur-xl" />
+        )}
+  
+        {pin.userRole === 'business' ? (
+          <div className="relative">
+            <div 
+              className={`${size} transform rotate-45 shadow-2xl overflow-hidden border-4 ${pin.isHot ? 'border-yellow-400' : 'border-white'} transition-all`}
+              style={{ backgroundColor: color }}
+            >
+              {/* ...既存の中身 */}
+            </div>
+            {/* 50件以上の場合は常に波紋を出す */}
+            {(isHovered || pin.isHot) && (
+              <div className="absolute inset-0 transform rotate-45 animate-ping" style={{ backgroundColor: color, opacity: 0.3 }} />
+            )}
+          </div>
+        ) : (
+          <div className="relative">
+            <div 
+              className={`${size} rounded-full shadow-2xl flex items-center justify-center transition-all border-4 ${pin.isHot ? 'border-yellow-400' : 'border-white'} relative`}
+              style={{ backgroundColor: color }}
+            >
+              <MapPinIcon className="w-5 h-5 text-white" />
+            </div>
+            {(isHovered || pin.isHot) && (
+              <div className="absolute inset-0 rounded-full animate-ping" style={{ backgroundColor: color, opacity: 0.3 }} />
+            )}
+          </div>
+        )}
+      </div>
+    );
     return L.divIcon({
       html: iconHtml,
       className: '', 

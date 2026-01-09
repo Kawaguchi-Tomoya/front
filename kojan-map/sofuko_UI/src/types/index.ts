@@ -29,6 +29,7 @@ export interface Pin {
   reactions: number;
   createdAt: Date;
   viewCount?: number;
+  isHot?: boolean; // 投稿数がしきい値を超えたかどうか
 }
 
 export interface Reaction {
