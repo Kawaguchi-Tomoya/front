@@ -5,6 +5,7 @@ import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { User } from '../types';
 import { mockPins, mockInquiries, Inquiry } from '../lib/mockData';
+import {BusinessApplicationList} from './AdminDisplayBusinessApplicationList';
 import { 
   Users, 
   AlertTriangle, 
@@ -38,9 +39,10 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
     { id: 'r3', pinId: 'pin2', reporter: '鈴木一郎', reason: '虚偽情報', status: 'resolved' as const, date: '2025-11-01' },
   ]);
 
+  //データベースから持ってくるようにしなければならない？
   const [businessApplications] = useState([
-    { id: 'ba1', userName: '田中商店', email: 'tanaka@example.com', businessName: '田中商店', phone: '090-1234-5678', address: '山田市1-2-3', date: '2025-11-03' },
-    { id: 'ba2', userName: '鈴木食堂', email: 'suzuki@example.com', businessName: '鈴木食堂', phone: '090-8765-4321', address: '山田市4-5-6', date: '2025-11-02' },
+    { id: 'ba1', userName: '田中商店', email: 'tanaka@example.com', ShopName: '田中商店', PhoneNumber: '090-1234-5678', address: '山田市1-2-3', date: '2025-11-03' },
+    { id: 'ba2', userName: '鈴木食堂', email: 'suzuki@example.com', ShopName: '鈴木食堂', PhoneNumber: '090-8765-4321', address: '山田市4-5-6', date: '2025-11-02' },
   ]);
 
   const [inquiries, setInquiries] = useState<Inquiry[]>(mockInquiries);
@@ -454,8 +456,19 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
             </div>
           )}
 
-          {/* 事業者申請タブ */}
+          {/* ★事業者申請一覧表示 */}
           {activeTab === 'business' && (
+            <div className="max-w-5xl space-y-4">
+              <BusinessApplicationList 
+                applications = {businessApplications} 
+                onApprove = {handleApproveBusinessAccount}
+                onReject = {handleRejectBusinessAccount}
+              />
+            </div>
+          )}
+
+          {/* 事業者申請タブ */}
+          {/*{activeTab === 'business' && (
             <div className="max-w-5xl space-y-4">
               {businessApplications.map((app) => (
                 <Card key={app.id} className="shadow-lg border-slate-200 hover:shadow-xl transition-shadow">
@@ -512,6 +525,10 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
               ))}
             </div>
           )}
+
+          */}
+
+          
 
           {/* 投稿管理タブ */}
           {activeTab === 'posts' && (

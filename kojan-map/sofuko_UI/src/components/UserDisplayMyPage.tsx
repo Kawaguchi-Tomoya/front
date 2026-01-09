@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { SelectPostHistory } from './SelectPostHistory';
 import { UserReactionViewScreen } from './UserReactionViewScreen';
 import { SelectUserSetting } from './SelectUserSetting';
+import {UserInputBusinessApplication} from './UserInputBusinessApplication';
 
 interface UserDisplayMyPageProps {
   user: User;
@@ -66,30 +67,24 @@ export function UserDisplayMyPage({
               </div>
             </div>
 
-            {!showBusinessRegistration && (
+           {!showBusinessRegistration ? (
               <Button onClick={() => setShowBusinessRegistration(true)} variant="outline">
                 <Shield className="w-4 h-4 mr-2" />
                 事業者登録を申請
               </Button>
-            )}
+            ) : (
+              <UserInputBusinessApplication 
+                onUpdateUser={(data) => {
+                console.log("申請データ:", data);
+                handleBusinessRegistration(); 
+                   }} 
+                onCancel={() => setShowBusinessRegistration(false)} 
+                  />
+                )}
 
-            {showBusinessRegistration && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
-                <p className="text-sm font-bold">事業者登録申請</p>
-                <p className="text-xs text-gray-600">
-                  事業者として登録すると、店舗名での投稿やダッシュボード機能が利用できます。
-                </p>
-                <div className="space-y-2">
-                  <input type="text" placeholder="店舗名" className="w-full px-3 py-2 border rounded-lg" />
-                  <input type="tel" placeholder="電話番号" className="w-full px-3 py-2 border rounded-lg" />
-                  <input type="text" placeholder="住所" className="w-full px-3 py-2 border rounded-lg" />
-                </div>
-                <div className="flex space-x-2">
-                  <Button onClick={handleBusinessRegistration} size="sm">申請する</Button>
-                  <Button onClick={() => setShowBusinessRegistration(false)} variant="outline" size="sm">キャンセル</Button>
-                </div>
-              </div>
-            )}
+          
+
+            
           </CardContent>
         </Card>
 
