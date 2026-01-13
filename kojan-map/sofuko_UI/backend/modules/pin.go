@@ -2,14 +2,18 @@ package models
 
 import "time"
 
-// Pin フロントエンドの Pin 型に対応
 type Pin struct {
-	ID           string    `json:"id"`
-	Latitude     float64   `json:"latitude"`
-	Longitude    float64   `json:"longitude"`
-	Genre        string    `json:"genre"`        // "gourmet", "event", "view", etc.
-	UserRole     string    `json:"userRole"`     // "business" or "general"
-	BusinessIcon string    `json:"businessIcon"` // URL
-	Title        string    `json:"title"`
-	CreatedAt    time.Time `json:"createdAt"`
+    ID           string    `json:"id"`
+    UserID       string    `json:"userId"`
+    Title        string    `json:"title"`
+    Description  string    `json:"description"`
+    Genre        string    `json:"genre"`
+    UserRole     string    `json:"userRole"`
+    BusinessName string    `json:"businessName,omitempty"`
+    Images       []string  `json:"images"`
+    Latitude     float64   `json:"latitude"`
+    Longitude    float64   `json:"longitude"`
+    Reactions    int       `json:"reactions"`
+    ViewCount    int       `json:"viewCount"`
+    CreatedAt    time.Time `json:"createdAt"`
 }

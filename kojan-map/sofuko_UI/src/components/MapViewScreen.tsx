@@ -15,27 +15,38 @@ interface MapViewProps {
   isOverlayOpen?: boolean;
 }
 
-export function MapView({ pins, onPinClick, onMapDoubleClick, isOverlayOpen }: MapViewProps) {
+export function MapViewScreen({ pins, onPinClick, onMapDoubleClick, isOverlayOpen }: MapViewProps) {
   const [hoveredPinId, setHoveredPinId] = useState<string | null>(null);
-  {/*
-  const createCustomIcon = (pin: Pin, isHovered: boolean) => {
+
+  // 1. 同じ位置のピンをグループ化するロジックを統合
+  const groupedPins = pins.reduce((acc, pin) => {
+    const key = `${pin.latitude.toFixed(4)}_${pin.longitude.toFixed(4)}`;
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(pin);
+    return acc;
+  }, {} as Record<string, Pin[]>);
+
+  // 2. ピンのサイズ決定ロジック
+  const getPinSizeClass = (count: number, isHot: boolean) => {
+    if (isHot) return 'w-12 h-12';
+    if (count > 1) return 'w-11 h-11';
+    return 'w-10 h-10';
+  };
+
+  const createCustomIcon = (groupPins: Pin[], isHovered: boolean) => {
+    const pin = groupPins[0];
+    const count = groupPins.length;
     const color = genreColors[pin.genre];
-    const size = "w-10 h-10"; 
+    const sizeClass = getPinSizeClass(count, pin.isHot);
 
     const iconHtml = renderToString(
       <div className={`relative transition-all duration-300 ${isHovered ? 'scale-110 -translate-y-2' : ''}`}>
-        {/* ピンの影 */}{/*
-        <div className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 rounded-full bg-black/20 blur-sm transition-all ${isHovered ? 'w-8 h-3' : 'w-6 h-2'}`} />
-
+        {/* ピン本体の描画 */}
         {pin.userRole === 'business' ? (
-          // 事業者ピン（ダイヤモンド形状）
           <div className="relative">
             <div 
-              className={`${size} transform rotate-45 shadow-2xl overflow-hidden border-4 border-white transition-all`}
-              style={{ 
-                backgroundColor: color,
-                boxShadow: `0 10px 25px -5px ${color}50`
-              }}
+              className={`${sizeClass} transform rotate-45 shadow-2xl overflow-hidden border-4 border-white transition-all`}
+              style={{ backgroundColor: color, boxShadow: `0 10px 25px -5px ${color}50` }}
             >
               <div className="transform -rotate-45 w-full h-full flex items-center justify-center">
                 {pin.businessIcon ? (
@@ -45,26 +56,23 @@ export function MapView({ pins, onPinClick, onMapDoubleClick, isOverlayOpen }: M
                 )}
               </div>
             </div>
-            {isHovered && (
-              <div className="absolute inset-0 transform rotate-45 animate-ping" style={{ backgroundColor: color, opacity: 0.3 }} />
-            )}
           </div>
         ) : (
-          // 一般ユーザーピン（円形＋グロー）
           <div className="relative">
             <div 
-              className={`${size} rounded-full shadow-2xl flex items-center justify-center transition-all border-4 border-white relative`}
-              style={{ 
-                backgroundColor: color,
-                boxShadow: `0 10px 25px -5px ${color}50`
-              }}
+              className={`${sizeClass} rounded-full shadow-2xl flex items-center justify-center transition-all border-4 border-white relative`}
+              style={{ backgroundColor: color, boxShadow: `0 10px 25px -5px ${color}50` }}
             >
               <MapPinIcon className="w-5 h-5 text-white" />
               <div className="absolute inset-0 rounded-full" style={{ background: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent 60%)` }} />
             </div>
-            {isHovered && (
-              <div className="absolute inset-0 rounded-full animate-ping" style={{ backgroundColor: color, opacity: 0.3 }} />
-            )}
+          </div>
+        )}
+
+        {/* 3. カウントバッジ */}
+        {count > 1 && (
+          <div className="absolute -top-2 -right-2 bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg border-2 border-white z-20">
+            <span className="text-[10px] font-bold">{count}</span>
           </div>
         )}
       </div>
@@ -73,62 +81,14 @@ export function MapView({ pins, onPinClick, onMapDoubleClick, isOverlayOpen }: M
     return L.divIcon({
       html: iconHtml,
       className: '', 
-      iconSize: [40, 40],
-      iconAnchor: [20, 40], 
-    });
-  };*/}
-
-  const createCustomIcon = (pin: Pin, isHovered: boolean) => {
-    const color = genreColors[pin.genre];
-    // 50件以上の場合はサイズを少し大きくする
-    const size = pin.isHot ? "w-12 h-12" : "w-10 h-10"; 
-  
-    const iconHtml = renderToString(
-      <div className={`relative transition-all duration-300 ${isHovered ? 'scale-110 -translate-y-2' : ''}`}>
-        {/* 50件以上(isHot)の場合の特別背景エフェクト */}
-        {pin.isHot && (
-          <div className="absolute -inset-4 bg-orange-500/20 rounded-full animate-pulse blur-xl" />
-        )}
-  
-        {pin.userRole === 'business' ? (
-          <div className="relative">
-            <div 
-              className={`${size} transform rotate-45 shadow-2xl overflow-hidden border-4 ${pin.isHot ? 'border-yellow-400' : 'border-white'} transition-all`}
-              style={{ backgroundColor: color }}
-            >
-              {/* ...既存の中身 */}
-            </div>
-            {/* 50件以上の場合は常に波紋を出す */}
-            {(isHovered || pin.isHot) && (
-              <div className="absolute inset-0 transform rotate-45 animate-ping" style={{ backgroundColor: color, opacity: 0.3 }} />
-            )}
-          </div>
-        ) : (
-          <div className="relative">
-            <div 
-              className={`${size} rounded-full shadow-2xl flex items-center justify-center transition-all border-4 ${pin.isHot ? 'border-yellow-400' : 'border-white'} relative`}
-              style={{ backgroundColor: color }}
-            >
-              <MapPinIcon className="w-5 h-5 text-white" />
-            </div>
-            {(isHovered || pin.isHot) && (
-              <div className="absolute inset-0 rounded-full animate-ping" style={{ backgroundColor: color, opacity: 0.3 }} />
-            )}
-          </div>
-        )}
-      </div>
-    );
-    return L.divIcon({
-      html: iconHtml,
-      className: '', 
-      iconSize: [40, 40],
-      iconAnchor: [20, 40], 
+      iconSize: [44, 44],
+      iconAnchor: [22, 44], 
     });
   };
 
   return (
     <div className="flex-1 w-full h-full relative" style={{ zIndex: isOverlayOpen ? 0 : 10 }}>
-      {/* 凡例 */}
+      {/* 凡例 (変更なし) */}
       <div 
         className="absolute bottom-6 left-6 pointer-events-auto"
         style={{ zIndex: 99999 }} // Leafletの全レイヤー(最大1000程度)より上に配置
@@ -169,9 +129,8 @@ export function MapView({ pins, onPinClick, onMapDoubleClick, isOverlayOpen }: M
             </div>
           </div>
         </div>
-      </div>
+        </div>
 
-      {/* 地図 */}
       <MapContainer 
         center={[33.6071, 133.6823]} 
         zoom={17} 
@@ -183,39 +142,22 @@ export function MapView({ pins, onPinClick, onMapDoubleClick, isOverlayOpen }: M
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* 座標取得 */}
-        <GetLocation 
-          onLocationSelected={onMapDoubleClick} 
-          enabled={!isOverlayOpen} 
-        />
+        <GetLocation onLocationSelected={onMapDoubleClick} enabled={!isOverlayOpen} />
 
-        {pins.map((pin) => (
+        {/* 5. グループ化したピンをマーカーとして描画 */}
+        {Object.entries(groupedPins).map(([key, groupPins]) => (
           <Marker
-            key={pin.id}
-            position={[pin.latitude, pin.longitude]}
-            icon={createCustomIcon(pin, hoveredPinId === pin.id)}
+            key={key}
+            position={[groupPins[0].latitude, groupPins[0].longitude]}
+            icon={createCustomIcon(groupPins, hoveredPinId === key)}
             eventHandlers={{
-              click: () => onPinClick(pin),
-              mouseover: () => setHoveredPinId(pin.id),
-              mouseout: () => setHoveredPinId(null),
+              click: () => onPinClick(groupPins[0]),
+              mouseover: () => setHoveredPinId(key),
+              mouseout: () => setHoveredPinId(null)
             }}
-          >
-          </Marker>
+          />
         ))}
       </MapContainer>
-
-      {/* Leafletの標準ツールチップデザインを打ち消すスタイル */}
-      <style>{`
-        .leaflet-tooltip.custom-tooltip-container {
-          background: transparent !important;
-          border: none !important;
-          box-shadow: none !important;
-          padding: 0 !important;
-        }
-        .leaflet-tooltip-top:before {
-          border-top-color: #0f172a !important; /* slate-900 */
-        }
-      `}</style>
     </div>
   );
 }

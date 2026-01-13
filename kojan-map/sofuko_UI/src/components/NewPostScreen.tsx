@@ -27,7 +27,7 @@ interface CreatePinModalProps {
   initialLongitude?: number;
 }
 
-export function CreatePinModal({ user, onClose, onCreate, initialLatitude, initialLongitude }: CreatePinModalProps) {
+export function NewPostScreen({ user, onClose, onCreate, initialLatitude, initialLongitude }: CreatePinModalProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [genre, setGenre] = useState<PinGenre>('other');
@@ -37,26 +37,6 @@ export function CreatePinModal({ user, onClose, onCreate, initialLatitude, initi
 
   /* 画像をアップロードするための処理 */
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // ファイルが選択された時の処理
-  /*
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    // 選択されたファイルをループしてプレビューURLを作成
-    const newImages: string[] = [];
-    Array.from(files).forEach((file) => {
-      // ブラウザで一時的に表示するためのURLを生成
-      const imageUrl = URL.createObjectURL(file);
-      newImages.push(imageUrl);
-    });
-
-    setImages((prev) => [...prev, ...newImages]);
-    
-    // 同じファイルを再度選択できるようにリセット
-    e.target.value = '';
-  };*/
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -328,9 +308,10 @@ export function CreatePinModal({ user, onClose, onCreate, initialLatitude, initi
             <Button type="submit" className="flex-1">
               投稿する
             </Button>
+            {/*
             <Button type="button" variant="outline" onClick={onClose}>
               キャンセル
-            </Button>
+            </Button>*/}
           </div>
         </form>
       </DialogContent>

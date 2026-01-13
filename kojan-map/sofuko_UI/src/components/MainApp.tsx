@@ -1,19 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Header } from './Header';
-import { MapView } from './MapView';
+import { MapViewScreen } from './MapViewScreen';
 import { Sidebar } from './Sidebar';
-import { PinDetailModal } from './PinDetailModal';
-import { CreatePinModal } from './CreatePinModal';
+import { DisplayPostList } from './DisplayPostList';
+import { NewPostScreen } from './NewPostScreen';
 import { UserDisplayMyPage } from './UserDisplayMyPage';
 import { BusinessDisplayMyPage } from './BusinessDisplayMyPage';
 import { BusinessDashboard } from './BusinessDashboard';
 import { ContactModal } from './ContactModal';
 import { DeleteAccountScreen } from './DeleteAccountScreen';
 import { LogoutScreen } from './LogoutScreen';
-//import { Pin, User } from '../types';
-//import type { Pin, User } from '../types';
-import type { Pin, User, PinGenre } from '../types';
-import { mockPins } from '../lib/mockData';
+import { Pin, User } from '../types';
+//import type { Pin, User, PinGenre } from '../types';
 
 interface MainAppProps {
   user: User;
@@ -39,6 +37,7 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
   const [reactedPins, setReactedPins] = useState<Set<string>>(new Set());
   // APIからのデータを保持する
   const [detailData, setDetailData] = useState<PinDetailExtra | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
     const fetchPins = async () => {
@@ -160,7 +159,7 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
       });
     }
   };*/
-
+/*
   const handlePinClick = async (pin: Pin) => {
     console.log("1. クリックされたピン:", pin.id);
     setSelectedPin(pin);
@@ -205,6 +204,19 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
           Math.abs(p.longitude - pin.longitude) < 0.0001
         )
       });
+    }
+  };*/
+
+  const handlePinClick = async (pin: Pin) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/posts/detail?id=${pin.id}`);
+      const data = await response.json();
+      
+      // 3. 取得したデータをステートに入れて、パネルを開く
+      setSelectedPin(data.pin); // data.pin は Go側の PinDetailResponse 構造体の中身
+      setIsDetailOpen(true);
+    } catch (error) {
+      console.error("Fetch error:", error);
     }
   };
 
@@ -442,8 +454,8 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
               onCreatePin={() => setIsCreateModalOpen(true)}
               onPinClick={handlePinClick}
             />
-            <MapView 
-              pins={filteredPins}
+            <MapViewScreen 
+              pins={pins} 
               onPinClick={handlePinClick}
               onMapDoubleClick={handleMapDoubleClick}
             />
@@ -515,7 +527,7 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
       )}*/}
 
       {selectedPin && (
-        <PinDetailModal
+        <DisplayPostList
           pin={selectedPin}
           currentUser={user}
           // APIからのデータを優先し、なければフロントの状態を使う
@@ -539,7 +551,7 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
       )}
       
       {isCreateModalOpen && (
-        <CreatePinModal
+        <NewPostScreen
           user={user}
           onClose={() => {
             setIsCreateModalOpen(false);

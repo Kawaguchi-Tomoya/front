@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"my-app-backend/handlers"
+	"github.com/google/uuid" // go get github.com/google/uuid を実行してください
 )
 
 type Pin struct {
@@ -22,6 +22,7 @@ type Pin struct {
 	Reactions    int       `json:"reactions"`
 	ViewCount    int       `json:"viewCount"`
 	CreatedAt    time.Time `json:"createdAt"`
+	IsHot        bool      `json:"isHot"`
 }
 
 type PinDetailResponse struct {
@@ -30,10 +31,13 @@ type PinDetailResponse struct {
 	IsReacted      bool  `json:"isReacted"`
 }
 
+// 他のファイル（GetPostList.goなど）と共有するためにスライスを定義
+var mockPins = []Pin{}
+
 func main() {
 	r := gin.Default()
 
-	// --- 1. CORS 設定 (localhost と 127.0.0.1 両方を許容するために重要) ---
+	// --- 1. CORS 設定 ---
 	r.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -45,50 +49,44 @@ func main() {
 		c.Next()
 	})
 
-	// --- 2. 【詳細取得】GET /api/posts/detail?id=xxx ---
-	r.GET("/api/posts/detail", func(c *gin.Context) {
-		pinID := c.Query("id")
-		println("DEBUG: 詳細リクエスト受信 ID:", pinID)
-
-		sample := Pin{
-			ID:          pinID,
-			Title:       "サーバーから取得した投稿",
-			Description: "詳細データの取得に成功しました。",
-			CreatedAt:   time.Now(),
-			Images:      []string{"https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=500"},
-		}
-
-		c.JSON(http.StatusOK, PinDetailResponse{
-			Pin:            sample,
-			PinsAtLocation: []Pin{sample},
-			IsReacted:      false,
-		})
-	})
-
-	// --- 3. 【新規投稿】POST /api/posts ---
+	// --- 2. 【新規投稿】POST /api/posts ---
 	r.POST("/api/posts", func(c *gin.Context) {
 		var newPin Pin
-		// JSONをパース
 		if err := c.ShouldBindJSON(&newPin); err != nil {
 			println("DEBUG: POSTエラー:", err.Error())
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		println("DEBUG: 新規投稿受信:", newPin.Title)
+
+		// IDの生成（UUIDを使用）
+		newPin.ID = uuid.New().String()
 		
-		// フロントエンドが期待する成功レスポンス
+		// GetPostTimestamp.go で定義した関数を使用
+		newPin.CreatedAt = GetCurrentTimestamp()
+		
+		// 初期値の設定
+		newPin.Reactions = 0
+		newPin.ViewCount = 0
+
+		// メモリ上のデータに追加
+		mockPins = append(mockPins, newPin)
+		
+		println("DEBUG: 新規投稿受信:", newPin.Title, "時刻:", newPin.CreatedAt.String())
+
 		c.JSON(http.StatusCreated, gin.H{
 			"status": "success",
-			"id":     "generated-id-" + time.Now().Format("05"),
+			"id":     newPin.ID,
 		})
 	})
 
 	// 1. 投稿一覧取得 (GetPostList.go)
-	r.GET("/api/posts", handlers.GetPostList)
+	r.GET("/api/posts", GetPostList)
 
-	// 2. 投稿数しきい値チェック (CheckPostCountThreshold.go)
-	r.GET("/api/posts/threshold", handlers.CheckPostCountThreshold)
+	// 2. 投稿詳細取得 (GetPostDetail.go など)
+	r.GET("/api/posts/detail", HandleGetPostDetail)
 
-	// 8080ポートで起動
+	// 3. 投稿数しきい値チェック (CheckPostCountThreshold.go)
+	r.GET("/api/posts/threshold", CheckPostCountThreshold)
+
 	r.Run(":8080")
 }

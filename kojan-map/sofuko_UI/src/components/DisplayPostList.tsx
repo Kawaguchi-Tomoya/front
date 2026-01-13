@@ -26,7 +26,7 @@ interface PinDetailModalProps {
     onSelectPin?: (pin: Pin) => void;
 }
 
-export function PinDetailModal({ pin, currentUser, isReacted, onClose, onReaction, onDelete, onBlockUser, pinsAtLocation, onOpenCreateAtLocation, onSelectPin }: PinDetailModalProps) {
+export function DisplayPostList({ pin, currentUser, isReacted, onClose, onReaction, onDelete, onBlockUser, pinsAtLocation, onOpenCreateAtLocation, onSelectPin }: PinDetailModalProps) {
   const [isReporting, setIsReporting] = useState(false);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
