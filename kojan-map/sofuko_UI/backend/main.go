@@ -88,5 +88,11 @@ func main() {
 	// 3. 投稿数しきい値チェック (CheckPostCountThreshold.go)
 	r.GET("/api/posts/threshold", CheckPostCountThreshold)
 
+	// ブロックリストの取得
+	r.GET("/api/user/blocks", GetBlockList)
+
+	// ブロック追加
+	r.POST("/api/block", SubmitBlock)
+
 	r.Run(":8080")
 }
