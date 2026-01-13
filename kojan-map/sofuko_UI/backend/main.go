@@ -5,7 +5,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid" // go get github.com/google/uuid を実行してください
+	"github.com/google/uuid" 
+	"github.com/gin-contrib/cors"
 )
 
 type Pin struct {
@@ -38,16 +39,14 @@ func main() {
 	r := gin.Default()
 
 	// --- 1. CORS 設定 ---
-	r.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(http.StatusOK)
-			return
-		}
-		c.Next()
-	})
+	r.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"http://localhost:3000"},
+        // ここに "DELETE" が含まれていることで、エラーが解消されます
+        AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+        AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+        AllowCredentials: true,
+        MaxAge:           12 * time.Hour,
+    }))
 
 	// --- 2. 【新規投稿】POST /api/posts ---
 	r.POST("/api/posts", func(c *gin.Context) {
@@ -93,6 +92,9 @@ func main() {
 
 	// ブロック追加
 	r.POST("/api/block", SubmitBlock)
+
+	// ブロック解除
+	r.DELETE("/api/user/blocks/:id", DeleteBlock)
 
 	r.Run(":8080")
 }
