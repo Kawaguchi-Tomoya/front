@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { User } from '../types';
 import { mockPins, mockInquiries, Inquiry } from '../lib/mockData';
 import {BusinessApplicationList} from './AdminDisplayBusinessApplicationList';
+import ProcessBusinessRequestScreen from './ProcessBusinessRequestScreen';
 import { 
   Users, 
   AlertTriangle, 
@@ -40,7 +41,7 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
   ]);
 
   //データベースから持ってくるようにしなければならない？
-  const [businessApplications] = useState([
+  const [businessApplications,setBusinessApplications] = useState([
     { id: 'ba1', userName: '田中商店', email: 'tanaka@example.com', ShopName: '田中商店', PhoneNumber: '090-1234-5678', address: '山田市1-2-3', date: '2025-11-03' },
     { id: 'ba2', userName: '鈴木食堂', email: 'suzuki@example.com', ShopName: '鈴木食堂', PhoneNumber: '090-8765-4321', address: '山田市4-5-6', date: '2025-11-02' },
   ]);
@@ -79,13 +80,15 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
     { name: '緊急情報', value: 1, color: '#8B5CF6' },
   ];
 
-  const handleApproveBusinessAccount = (appId: string) => {
+  {/*
+    const handleApproveBusinessAccount = (appId: string) => {
     toast.success('事業者アカウントを承認しました');
   };
 
   const handleRejectBusinessAccount = (appId: string) => {
     toast.success('事業者申請を却下しました');
   };
+  */}
 
   const handleResolveReport = (reportId: string) => {
     toast.success('通報を処理しました');
@@ -458,13 +461,7 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
 
           {/* ★事業者申請一覧表示 */}
           {activeTab === 'business' && (
-            <div className="max-w-5xl space-y-4">
-              <BusinessApplicationList 
-                applications = {businessApplications} 
-                onApprove = {handleApproveBusinessAccount}
-                onReject = {handleRejectBusinessAccount}
-              />
-            </div>
+  <ProcessBusinessRequestScreen />
           )}
 
           {/* 事業者申請タブ */}
