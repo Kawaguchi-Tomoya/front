@@ -4,12 +4,13 @@ import { LogOut, Check } from 'lucide-react'; // 修正箇所1: Checkを追加
 
 interface User {
   email: string;
-  role: 'business' | 'general';
+  role: 'business' | 'general' | 'admin';
 }
 
 interface LogoutScreenProps {
   user: User;
   onLogout: () => void;
+  onBack: () => void;
 }
 
 export function LogoutScreen({ user, onLogout }: LogoutScreenProps) {
