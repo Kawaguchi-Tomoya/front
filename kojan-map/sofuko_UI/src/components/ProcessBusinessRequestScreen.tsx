@@ -1,59 +1,29 @@
-//M4-5-4 対応した事業者申請を反映する
+//M4-5-4 申請反映　関数がAdminDashbord.tsxにも必要だったのでモジュールとは少し違います。
+import { BusinessApplicationList } from './AdminDisplayBusinessApplicationList';
 
-import React, { useState } from 'react';
-import { BusinessApplicationList, UserInputBusiness } from './AdminDisplayBusinessApplicationList';
-import { toast } from 'sonner'; 
+// 型の定義（親からこれらをもらうと宣言する）
+interface Props {
+  applications: any[]; // DashboardにあるbusinessApplicationsのこと
+  onApprove: (id: string) => void; // DashboardにあるhandleApproveのこと
+  onReject: (id: string) => void;  // DashboardにあるhandleRejectのこと
+}
 
-// モックデータ（初期表示用）
-const INITIAL_DATA: UserInputBusiness[] = [
-  {
-    id: '1',
-    userName: '田中 太郎',
-    email: 'tanaka@example.com',
-    ShopName: '田中ベーカリー',
-    PhoneNumber: '03-1234-5678',
-    address: '東京都渋谷区...',
-    date: '2023-10-27',
-  },
-  {
-    id: '2',
-    userName: '佐藤 花子',
-    email: 'sato@example.com',
-    ShopName: 'サトーカフェ',
-    PhoneNumber: '03-9876-5432',
-    address: '大阪府大阪市...',
-    date: '2023-10-28',
-  },
-];
-
-
-export default function ProcessBusinessRequestScreen() {
-  // 1. 申請一覧をステートで管理
-  const [applications, setApplications] = useState<UserInputBusiness[]>(INITIAL_DATA);
-
-  // 2. 承認時の処理
-  const handleApprove = (id: string) => {
-    setApplications((prev) => prev.filter((app) => app.id !== id));
-  toast.success('事業者アカウントを承認しました');
-};
-   
-
-  // 3. 却下時の処理
-  const handleReject = (id: string) => {
-    setApplications((prev) => prev.filter((app) => app.id !== id));
-  toast.error('事業者申請を却下しました');
-};
-    
-
+export default function ProcessBusinessRequestScreen({ applications, onApprove, onReject }: Props) {
+  // ★ ここにあった useState や独自関数はすべて削除します
+  
   return (
-    <div className="p-6 bg-slate-50 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6">事業者申請管理</h1>
-      
-      {/* 子コンポーネントにデータと関数を渡す */}
+    <div className="space-y-6">
+      {/* 画面のタイトルや統計などの見た目だけを書く */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-bold text-slate-800">事業者申請の処理</h2>
+        <p className="text-sm text-slate-500">現在 {applications.length} 件の未処理案件があります</p>
+      </div>
+
+      {/* 実際のリスト表示は List コンポーネントに任せる */}
       <BusinessApplicationList 
         applications={applications} 
-        onApprove={handleApprove}
-        onReject={handleReject}
+        onApprove={onApprove}
+        onReject={onReject}
       />
     </div>
   );

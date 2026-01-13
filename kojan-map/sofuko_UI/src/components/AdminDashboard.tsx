@@ -80,15 +80,18 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
     { name: '緊急情報', value: 1, color: '#8B5CF6' },
   ];
 
-  {/*
-    const handleApproveBusinessAccount = (appId: string) => {
+  
+    //事業者申請承認時の処理
+    const handleApprove = (id: string) => {
+      setBusinessApplications((prev) => prev.filter((app) => app.id !== id));
     toast.success('事業者アカウントを承認しました');
   };
-
-  const handleRejectBusinessAccount = (appId: string) => {
-    toast.success('事業者申請を却下しました');
+     
+  //事業者申請却下時の処理
+    const handleReject = (id: string) => {
+      setBusinessApplications((prev) => prev.filter((app) => app.id !== id));
+    toast.error('事業者申請を却下しました');
   };
-  */}
 
   const handleResolveReport = (reportId: string) => {
     toast.success('通報を処理しました');
@@ -461,8 +464,12 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
 
           {/* ★事業者申請一覧表示 */}
           {activeTab === 'business' && (
-  <ProcessBusinessRequestScreen />
-          )}
+  <ProcessBusinessRequestScreen 
+    applications={businessApplications} // データを貸す
+    onApprove={handleApprove}           // 関数を貸す
+    onReject={handleReject}             // 関数を貸す
+  />
+)}
 
           {/* 事業者申請タブ */}
           {/*{activeTab === 'business' && (
