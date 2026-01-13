@@ -133,17 +133,14 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                   <span>事業者会員</span>
                 </Button>
                 
-                    <Button 
-          variant="outline" 
-          className="h-20 flex justify-start space-x-4 border-2 hover:border-amber-500 hover:bg-amber-50"
-          onClick={() => handleRoleSelect('admin')}
-        >
-          
-          <div className="text-left">
-            <div className="font-bold text-sm">管理者</div>
-            <div className="text-[10px] text-gray-400">システムおよびコンテンツの管理</div>
-          </div>
-        </Button>
+                                  <Button 
+      variant="outline" 
+      className="h-28 w-1/2 justify-self-center col-span-2 flex flex-col items-center justify-center space-y-2 border-2 hover:border-amber-500"
+      onClick={() => handleRoleSelect('admin')}
+    >
+     
+      <span className="font-bold">管理者</span>
+    </Button>
               </div>
             </div>
           )}
