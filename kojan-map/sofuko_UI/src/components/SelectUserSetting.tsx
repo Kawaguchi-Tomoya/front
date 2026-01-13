@@ -3,7 +3,7 @@ import { User } from '../types';
 import { Button } from './ui/button';
 import { Trash2, Loader2 } from 'lucide-react';
 import { DisplayUserSetting } from './DisplayUserSetting';
-import { UserBlockViewScreen } from './UserBlockViewScreen';
+import { SelectUnlock } from './SelectUnlock'; // 新しくインポート
 
 interface SelectUserSettingProps {
   onNavigateToDeleteAccount: () => void;
@@ -15,7 +15,6 @@ export function SelectUserSetting({
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 1. コンポーネントマウント時にバックエンドからデータを取得
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -29,25 +28,8 @@ export function SelectUserSetting({
         setLoading(false);
       }
     };
-
     fetchUser();
   }, []);
-
-  // 2. ブロック解除の更新処理
-  const handleUpdateUser = async (updatedUser: User) => {
-    // 楽観的UI更新（先に画面を更新してサクサク動かす）
-    const previousUser = user;
-    setUser(updatedUser);
-
-    try {
-      // 実際にはここでバックエンドに保存リクエストを送る
-      // 例: await fetch('/api/user/update', { method: 'POST', body: JSON.stringify(updatedUser) });
-      console.log("サーバーに保存されました:", updatedUser.blockedUsers);
-    } catch (error) {
-      console.error("更新に失敗しました:", error);
-      setUser(previousUser); // 失敗したら元に戻す
-    }
-  };
 
   if (loading) {
     return (
@@ -61,13 +43,18 @@ export function SelectUserSetting({
 
   return (
     <div className="space-y-4">
-      {/* 抽出したブロックリスト表示コンポーネント */}
-      <UserBlockViewScreen 
-        user={user} 
-        onUpdateUser={handleUpdateUser} 
-      />
+      {/* ブロック設定セクション */}
+      <DisplayUserSetting 
+        title="ブロック中のユーザー" 
+        description="ブロックを解除すると、相手からのメッセージや投稿が再び表示されます。"
+      >
+        <SelectUnlock 
+          user={user} 
+          onUpdateUser={(updated) => setUser(updated)} 
+        />
+      </DisplayUserSetting>
 
-      {/* 退会設定 */}
+      {/* 退会設定セクション */}
       <DisplayUserSetting 
         title="退会" 
         description="アカウントの削除"
