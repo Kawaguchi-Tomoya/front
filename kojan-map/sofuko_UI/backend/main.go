@@ -48,6 +48,25 @@ func main() {
         MaxAge:           12 * time.Hour,
     }))
 
+	// ログイン
+	r.POST("/api/login", func(c *gin.Context) {
+		var req LoginRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "無効なリクエストデータです"})
+			return
+		}
+
+		// デバッグ出力
+		println("DEBUG: ログイン試行 - GoogleID:", req.GoogleID, "Role:", req.Role)
+
+		// 成功レスポンス
+		c.JSON(http.StatusOK, gin.H{
+			"status":  "success",
+			"message": "ログインに成功しました",
+			"role":    req.Role,
+		})
+	})
+
 	// --- 2. 【新規投稿】POST /api/posts ---
 	r.POST("/api/posts", func(c *gin.Context) {
 		var newPin Pin
@@ -96,5 +115,11 @@ func main() {
 	// ブロック解除
 	r.DELETE("/api/user/blocks/:id", DeleteBlock)
 
+	//ログイン
+	
+
 	r.Run(":8080")
+
+	
+	
 }
