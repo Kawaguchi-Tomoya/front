@@ -46,6 +46,34 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     }
   };
 
+
+
+  
+  // App.tsx 等の親コンポーネント
+const handleLogin = async (role: string, googleId: string) => {
+  try {
+    const response = await fetch('http://localhost:8080/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ role, googleId }),
+    });
+
+    const data = await response.json();
+    console.log('Backend Response:', data);
+    alert(`サーバー接続成功: ${data.message}`);
+  } catch (error) {
+    console.error('接続エラー:', error);
+    alert('サーバーに接続できませんでした');
+  }
+};
+
+
+
+
+// ...
+<LoginScreen onLogin={handleLogin} />
   const handleRoleSelect = (role: UserRole) => {
     if (googleId) {
       onLogin(role, googleId);
