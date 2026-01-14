@@ -2,19 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { BarChart3, Eye } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer, 
-  PieChart, 
-  Pie, 
-  Cell 
-} from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 // 型定義（AdminDashboad.tsxからくるデータの格納場所）
 interface WeeklyActivity {

@@ -8,25 +8,9 @@ import { mockPins, mockInquiries, Inquiry } from '../lib/mockData';
 import ProcessBusinessRequestScreen from './ProcessBusinessRequestScreen';
 import { AdminDashboardScreen } from './AdminDashboardScreen';
 import { AdminDashboardGraphScreen } from './AdminDashboardGraphScreen';
-import { 
-  Users, 
-  AlertTriangle, 
-  TrendingUp, 
-  MapPin, 
-  UserCheck, 
-  Trash2,
-  CheckCircle,
-  XCircle,
-  LogOut,
-  Activity,
-  BarChart3,
-  Shield,
-  Clock,
-  Eye
-  ,MessageSquare
-} from 'lucide-react';
+import { Users, AlertTriangle, TrendingUp, MapPin, UserCheck, Trash2,CheckCircle,XCircle,LogOut,Activity,BarChart3,Shield,Clock,Eye,MessageSquare} from 'lucide-react';
 import { toast } from 'sonner';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+//import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 interface AdminDashboardProps {
   user: User;
@@ -76,10 +60,6 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
       setBusinessApplications((prev) => prev.filter((app) => app.id !== id));
     toast.error('事業者申請を却下しました');
   };
-
-
-
-
 
 
   const handleResolveReport = (reportId: string) => {
