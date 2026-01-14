@@ -12,6 +12,7 @@ import { WithdrawalScreen } from './WithdrawalScreen';
 import { LogoutScreen } from './LogoutScreen';
 import { Pin, User } from '../types';
 //import type { Pin, User, PinGenre } from '../types';
+//import { UserInputSearchKeyword } from './UserInputSearchKeyword';
 
 interface MainAppProps {
   user: User;
