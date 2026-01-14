@@ -51,7 +51,15 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   
   // App.tsx 等の親コンポーネント
 const handleLogin = async (role: string, googleId: string) => {
+  // 【修正箇所①】role が "general" ではない場合、処理を中断する
+  if (role !== 'general') {
+    console.warn('一般会員以外のログイン試行をブロックしました:', role);
+    alert('一般会員以外はこのログインボタンを使用できません。');
+    return; // ここで関数を終了させ、fetchを実行させない
+  }
+
   try {
+    // 【修正箇所②】ここから下は role が "general" の時のみ実行される
     const response = await fetch('http://localhost:8080/api/login', {
       method: 'POST',
       headers: {
