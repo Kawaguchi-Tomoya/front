@@ -1,33 +1,20 @@
-import { useState, useEffect } from 'react';
-import { Input } from './ui/input';
 import { Search } from 'lucide-react';
+import { Input } from './ui/input';
 
-interface KeywordSearchProps {
-  onSearch: (keyword: string) => void;
-  initialValue?: string;
-  placeholder?: string;
+interface Props {
+  value: string;
+  onChange: (value: string) => void;
 }
 
-export function KeywordSearch({ 
-  onSearch, 
-  initialValue = '', 
-  placeholder = 'キーワードで検索...' 
-}: KeywordSearchProps) {
-  const [keyword, setKeyword] = useState(initialValue);
-
-  useEffect(() => {
-    onSearch(keyword);
-  }, [keyword, onSearch]);
-
+export function KeywordInput({ value, onChange }: Props) {
   return (
-    <div className="relative w-full">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+    <div className="relative p-2">
+      <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
       <Input
-        type="text"
-        placeholder={placeholder}
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        className="pl-10 focus-visible:ring-1"
+        placeholder="キーワード検索..."
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="pl-10"
       />
     </div>
   );
