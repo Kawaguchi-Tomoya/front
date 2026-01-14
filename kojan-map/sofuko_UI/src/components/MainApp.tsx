@@ -12,7 +12,9 @@ import { WithdrawalScreen } from './WithdrawalScreen';
 import { LogoutScreen } from './LogoutScreen';
 import { Pin, User } from '../types';
 //import type { Pin, User, PinGenre } from '../types';
-//import { UserInputSearchKeyword } from './UserInputSearchKeyword';
+//import { Key } from './UserDisplayKeywordSearchResults';
+import { KeywordInput } from './UserInputSearchKeyword';
+import { KeywordResultView } from './UserDisplayKeywordSearchResults';
 
 interface MainAppProps {
   user: User;
@@ -39,6 +41,10 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
   // APIからのデータを保持する
   const [detailData, setDetailData] = useState<PinDetailExtra | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [selectedGenre, setSelectedGenre] = useState<any>('all');
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
 
   useEffect(() => {
     const fetchPins = async () => {
@@ -77,6 +83,46 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
 
     fetchPins();
   }, []);
+
+
+  //テスト
+  useEffect(() => {
+  if (user.role === 'business') {
+    setFilteredPins(pins);
+    return;
+  }
+
+  let filtered = [...pins];
+
+  // キーワード検索
+  if (searchKeyword) {
+    filtered = filtered.filter(pin => 
+      pin.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      pin.description.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+  }
+
+  // ジャンル
+  if (selectedGenre !== 'all') {
+    filtered = filtered.filter(pin => pin.genre === selectedGenre);
+  }
+
+  // 期間
+  const now = new Date();
+  if (dateFilter === 'today') {
+    filtered = filtered.filter(pin => new Date(pin.createdAt).toDateString() === now.toDateString());
+  } else if (dateFilter === 'week') {
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    filtered = filtered.filter(pin => new Date(pin.createdAt) >= weekAgo);
+  } else if (dateFilter === 'month') {
+    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    filtered = filtered.filter(pin => new Date(pin.createdAt) >= monthAgo);
+  }
+
+  setFilteredPins(filtered);
+}, [searchKeyword, selectedGenre, dateFilter, pins, user.role]);
+
+//テスト終
 
   const handleMapDoubleClick = (lat: number, lng: number) => {
     console.log(`緯度: ${lat}, 経度: ${lng}`);
@@ -446,22 +492,57 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
       />
       
       <div className="flex-1 flex overflow-hidden">
+      
+
+
       {currentView === 'map' && (
+
+       
+  <>
+    {/* Sidebarに代わる新しいサイドバー領域 */}
+    <div className="w-96 bg-white border-r border-gray-200 flex flex-col h-full overflow-hidden">
+      {user.role !== 'business' && (
+        <div className="p-4 border-b border-gray-200 space-y-2">
+          {/* 1. キーワード入力 */}
+          <KeywordInput value={searchKeyword} onChange={setSearchKeyword} />
+          
+          
+        </div>
+      )}
+
+      {/* 結果表示エリア（スクロール可能） */}
+      <div className="flex-1 overflow-y-auto">
+        {searchKeyword && (
+          <div className="bg-blue-50/50">
+            <p className="px-4 py-2 text-xs font-bold text-blue-600">キーワード結果</p>
+            <KeywordResultView pins={filteredPins} onPinClick={handlePinClick} />
+          </div>
+        )}
+        
+        
+
+        
+
+        {/* フィルターが何も適用されていない時の全件表示（必要に応じて） */}
+        {!searchKeyword && selectedGenre === 'all' && dateFilter === 'all' && (
+          <KeywordResultView pins={filteredPins} onPinClick={handlePinClick} />
+        )}
+      </div>
+    </div>
+
+    {/* マップ領域 */}
+    
+  </>
+)}
           <>
-            <Sidebar 
-              user={user}
-              pins={pins} // filteredPins ではなく全体を渡して Sidebar 内でフィルタリング
-              onFilterChange={setFilteredPins}
-              onCreatePin={() => setIsCreateModalOpen(true)}
-              onPinClick={handlePinClick}
-            />
+            
             <MapViewScreen 
               pins={pins} 
               onPinClick={handlePinClick}
               onMapDoubleClick={handleMapDoubleClick}
             />
           </>
-        )}
+        
 
         {currentView === 'mypage' && (
           user.role === 'business' ? (
@@ -564,6 +645,8 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
           initialLongitude={createInitialLongitude}
         />
       )}
+
+      
 
       {isContactModalOpen && (
         <ContactModal
