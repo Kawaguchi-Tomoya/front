@@ -122,14 +122,36 @@ const handleLogin = async (role: string, googleId: string) => {
                   に同意する
                 </label>
               </div>
-
-              {showTerms && (
-                <div className="border rounded-lg p-4 bg-gray-50 max-h-40 overflow-y-auto text-xs text-gray-600 animate-in fade-in">
-                  <p className="font-bold">【利用規約】</p>
-                  <p>本サービスはGoogle IDを利用した認証を行います...</p>
-                </div>
-              )}
-
+{showTerms && (
+  <div className="border rounded-lg p-4 bg-gray-50 max-h-40 overflow-y-auto text-xs text-gray-600 animate-in fade-in mb-4">
+    <p className="font-bold text-sm mb-2">【こじゃんとやまっぷ 利用規約】</p>
+    <div className="space-y-2">
+      <p>株式会社YHY（以下「当社」）が運営する「こじゃんとやまっぷ」（以下「本サービス」）の利用規約を以下の通り定めます。</p>
+      
+      <p className="font-bold">第1条（サービス概要と認証）</p>
+      <p>本サービスは、高知県香美市土佐山田町に特化した地域情報共有SNSです。利用にはGoogleアカウントを用いた認証が必要です。</p>
+      
+      <p className="font-bold">第2条（会員区分）</p>
+      <p>1. 一般会員：投稿（匿名）、閲覧、リアクション、通報、ブロック機能を利用できます。<br />
+      2. 事業者会員：当社審査を経て登録料を支払うことで、事業者名と専用アイコンを表示した情報発信が可能です。</p>
+      
+      <p className="font-bold">第3条（位置情報の取り扱い）</p>
+      <p>本サービスは、現在地に基づいたピン表示や距離順の並び替えを行うため、端末の位置情報を取得・利用します。</p>
+      
+      <p className="font-bold">第4条（禁止事項）</p>
+      <p>虚偽情報の投稿、公序良俗に反する内容、他者への誹謗中傷、本サービスの運営を妨げる行為を禁止します。違反した場合、投稿の削除や利用停止措置を行います。</p>
+      
+      <p className="font-bold">第5条（免責事項）</p>
+      <p>1. 投稿内容の正確性、最新性について当社は保証しません。<br />
+      2. 本サービスの利用により生じた損害やユーザー間のトラブルについて、当社は一切の責任を負いません。</p>
+      
+      <p className="font-bold">第6条（退会）</p>
+      <p>ユーザーはマイページよりいつでも退会でき、退会後は全ての登録情報が削除されます。</p>
+      
+      <p className="mt-2 text-[10px] text-gray-400">2025年12月 制定</p>
+    </div>
+  </div>
+)}
               <Button 
                 onClick={handleGoogleLoginClick} 
                 className="w-full"
