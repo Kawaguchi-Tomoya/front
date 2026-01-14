@@ -51,6 +51,7 @@ func main() {
 	// ログイン
 	r.POST("/api/login", HandleLogin)
 
+
 	// --- 2. 【新規投稿】POST /api/posts ---
 	r.POST("/api/posts", func(c *gin.Context) {
 		var newPin Pin
@@ -100,7 +101,6 @@ func main() {
 	r.DELETE("/api/user/blocks/:id", DeleteBlock)
 
 	//ログイン
-	
 
 	r.Run(":8080")
 

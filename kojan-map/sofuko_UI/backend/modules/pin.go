@@ -16,4 +16,5 @@ type Pin struct {
     Reactions    int       `json:"reactions"`
     ViewCount    int       `json:"viewCount"`
     CreatedAt    time.Time `json:"createdAt"`
+    IsBlocked    bool      `json:"-"`
 }
