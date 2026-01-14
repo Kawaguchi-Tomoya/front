@@ -7,7 +7,7 @@ import { NewPostScreen } from './NewPostScreen';
 import { UserDisplayMyPage } from './UserDisplayMyPage';
 import { BusinessDisplayMyPage } from './BusinessDisplayMyPage';
 import { BusinessDashboard } from './BusinessDashboard';
-import { ContactScreen } from './ContactScreen';
+import { ContactModal } from './ContactModal';
 import { WithdrawalScreen } from './WithdrawalScreen';
 import { LogoutScreen } from './LogoutScreen';
 import { Pin, User } from '../types';
@@ -565,7 +565,7 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
       )}
 
       {isContactModalOpen && (
-        <ContactScreen
+        <ContactModal
           user={user}
           onClose={() => setIsContactModalOpen(false)}
         />
