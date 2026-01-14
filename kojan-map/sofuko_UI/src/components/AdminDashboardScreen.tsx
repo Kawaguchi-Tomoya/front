@@ -1,8 +1,7 @@
 //M4-3-7 概要画面表示
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Users, TrendingUp, MapPin, UserCheck, AlertTriangle, Activity, BarChart3, Eye,} from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Users, TrendingUp, MapPin, UserCheck, AlertTriangle, Activity} from 'lucide-react';
 import { mockPins } from '../lib/mockData';
 
 interface AdminDashboardScreenProps {
