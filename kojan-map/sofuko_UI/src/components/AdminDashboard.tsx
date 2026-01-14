@@ -5,8 +5,8 @@ import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { User } from '../types';
 import { mockPins, mockInquiries, Inquiry } from '../lib/mockData';
-import {BusinessApplicationList} from './AdminDisplayBusinessApplicationList';
 import ProcessBusinessRequestScreen from './ProcessBusinessRequestScreen';
+import { AdminDashboardScreen } from './AdminDashboardScreen';
 import { 
   Users, 
   AlertTriangle, 
@@ -62,6 +62,7 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
     pendingReports: reports.filter(r => r.status === 'pending').length,
   };
 
+  {/*概要画面用のモック 
   const weeklyActivityData = [
     { date: '10/28', users: 720, posts: 45, reactions: 156 },
     { date: '10/29', users: 780, posts: 52, reactions: 189 },
@@ -79,9 +80,10 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
     { name: 'お店', value: 1, color: '#3B82F6' },
     { name: '緊急情報', value: 1, color: '#8B5CF6' },
   ];
+  */}
 
   
-    //事業者申請承認時の処理
+  //事業者申請承認時の処理
     const handleApprove = (id: string) => {
       setBusinessApplications((prev) => prev.filter((app) => app.id !== id));
     toast.success('事業者アカウントを承認しました');
@@ -92,6 +94,11 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
       setBusinessApplications((prev) => prev.filter((app) => app.id !== id));
     toast.error('事業者申請を却下しました');
   };
+
+
+
+
+
 
   const handleResolveReport = (reportId: string) => {
     toast.success('通報を処理しました');
@@ -255,8 +262,16 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
         <div className="p-8">
           {/* 概要タブ */}
           {activeTab === 'overview' && (
+            <AdminDashboardScreen
+              pendingReportsCount={systemStats.pendingReports} 
+              businessApplicationsCount={businessApplications.length} 
+            />
+          )}
+
+
+            
+            {/*
             <div className="space-y-6 max-w-7xl">
-              {/* 統計カード */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <Card className="border-none shadow-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white overflow-hidden relative">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16" />
@@ -343,7 +358,9 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
                 </Card>
               </div>
 
-              {/* グラフエリア */}
+              
+
+              //グラフエリア 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <Card className="lg:col-span-2 shadow-xl border-slate-200">
                   <CardHeader>
@@ -401,6 +418,8 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
               </div>
             </div>
           )}
+
+          */}
 
           {/* 通報管理タブ */}
           {activeTab === 'reports' && (
