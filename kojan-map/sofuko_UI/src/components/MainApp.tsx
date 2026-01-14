@@ -7,8 +7,8 @@ import { NewPostScreen } from './NewPostScreen';
 import { UserDisplayMyPage } from './UserDisplayMyPage';
 import { BusinessDisplayMyPage } from './BusinessDisplayMyPage';
 import { BusinessDashboard } from './BusinessDashboard';
-import { ContactModal } from './ContactModal';
-import { DeleteAccountScreen } from './DeleteAccountScreen';
+import { ContactScreen } from './ContactScreen';
+import { WithdrawalScreen } from './WithdrawalScreen';
 import { LogoutScreen } from './LogoutScreen';
 import { Pin, User } from '../types';
 //import type { Pin, User, PinGenre } from '../types';
@@ -504,7 +504,7 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
         )}
 
         {currentView === 'deleteAccount' && (
-          <DeleteAccountScreen 
+          <WithdrawalScreen
             user={user}
             onBack={() => setCurrentView('mypage')}
             onDeleteAccount={onLogout}
@@ -565,7 +565,7 @@ export function MainApp({ user, onLogout, onUpdateUser }: MainAppProps) {
       )}
 
       {isContactModalOpen && (
-        <ContactModal
+        <ContactScreen
           user={user}
           onClose={() => setIsContactModalOpen(false)}
         />

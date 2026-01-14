@@ -3,7 +3,8 @@ import { User } from '../types';
 import { Button } from './ui/button';
 import { Trash2, Loader2 } from 'lucide-react';
 import { DisplayUserSetting } from './DisplayUserSetting';
-import { SelectUnlock } from './SelectUnlock'; // 新しくインポート
+import { SelectUnlock } from './SelectUnlock'; 
+import { SelectWithdrawal } from './SelectWithdrawal';
 
 interface SelectUserSettingProps {
   onNavigateToDeleteAccount: () => void;
@@ -54,23 +55,10 @@ export function SelectUserSetting({
         />
       </DisplayUserSetting>
 
-      {/* 退会設定セクション */}
-      <DisplayUserSetting 
-        title="退会" 
-        description="アカウントの削除"
-        className="border-red-200"
-        titleClassName="text-red-600"
-      >
-        <div className="space-y-4">
-          <p className="text-sm text-gray-600">
-            アカウントを削除すると、すべての投稿とデータが完全に削除されます。この操作は取り消せません。
-          </p>
-          <Button variant="destructive" onClick={onNavigateToDeleteAccount}>
-            <Trash2 className="w-4 h-4 mr-2" />
-            アカウント削除画面へ
-          </Button>
-        </div>
-      </DisplayUserSetting>
+      {/* 退会設定セクション SelectWithdrawal.tsxに移行*/}
+      <SelectWithdrawal 
+        onNavigateToDeleteAccount={onNavigateToDeleteAccount} 
+      />
     </div>
   );
 }
