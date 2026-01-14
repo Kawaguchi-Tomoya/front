@@ -7,6 +7,8 @@ import { SelectUnlock } from './SelectUnlock';
 import { SelectWithdrawal } from './SelectWithdrawal';
 
 interface SelectUserSettingProps {
+  user: User;
+  onUpdateUser: (user: User) => void;
   onNavigateToDeleteAccount: () => void;
 }
 

@@ -80,11 +80,7 @@ export function UserDisplayMyPage({
                    }} 
                 onCancel={() => setShowBusinessRegistration(false)} 
                   />
-                )}
-
-          
-
-            
+                )}           
           </CardContent>
         </Card>
 
