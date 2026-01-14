@@ -1,68 +1,42 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
-	"github.com/gin-contrib/cors"
 )
 
-// LoginRequest はフロントエンドから送信されるJSON構造を定義します
+// LoginRequest: main.goでも使うため定義は残します
 type LoginRequest struct {
 	GoogleID string `json:"googleId" binding:"required"`
-	Role     string `json:"role"     binding:"required,oneof=general business admin"`
+	Role     string `json:"role"     binding:"required,oneof=general"`
 }
 
-// LoginResponse はフロントエンドへ返すレスポンス構造を定義します
-type LoginResponse struct {
-	Message string `json:"message"`
-	Status  string `json:"status"`
-}
+// 【修正箇所】UserInputInformation を「ハンドラー関数」に変更
+// 引数に *gin.Context を取ることで、main.go の r.POST 内で呼び出せるようになります
+func HandleLogin(c *gin.Context) {
+	fmt.Println("--- APIリクエスト受信 (HandleLogin) ---")
 
-func UserInputInformation() {
-	r := gin.Default()
+	var req LoginRequest
 
-	// CORSの設定 (フロントエンド localhost:3000 等からのアクセスを許可)
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
-		AllowMethods:     []string{"POST", "OPTIONS"},
-		AllowHeaders:     []string{"Content-Type"},
-		AllowCredentials: true,
-	}))
+	// JSONのパースとバリデーション
+	if err := c.ShouldBindJSON(&req); err != nil {
+		fmt.Printf("【バリデーションエラー】詳細: %v\n", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "error",
+			"message": "一般会員としてのみログイン可能です。",
+			"debug":   err.Error(),
+		})
+		return
+	}
 
-	// ログインAPIエンドポイント
-	r.POST("/api/login", func(c *gin.Context) {
-		var req LoginRequest
+	fmt.Printf("【受信データ】GoogleID: %s, Role: %s\n", req.GoogleID, req.Role)
 
-		// JSONのパースとバリデーション
-		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status":  "error",
-				"message": "無効なリクエストです。役割(role)やGoogle IDが不足しています。",
-			})
-			return
-		}
-
-		// 本来はここでDB保存やGoogleトークンの検証などを行います
-		// 今回はデモ用として受け取った値に基づいたメッセージを返します
-		
-		roleName := ""
-		switch req.Role {
-		case "general":
-			roleName = "一般会員"
-		case "business":
-			roleName = "事業者会員"
-		case "admin":
-			roleName = "管理者"
-		}
-
-		response := LoginResponse{
-			Status:  "success",
-			Message: roleName + "としてログインに成功しました (ID: " + req.GoogleID + ")",
-		}
-
-		c.JSON(http.StatusOK, response)
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "一般会員としてログインに成功しました (ID: " + req.GoogleID + ")",
 	})
-
-	// サーバー起動 (ポート 8080)
-	r.Run(":8080")
+	fmt.Println("【成功】レスポンスを送信しました")
 }
