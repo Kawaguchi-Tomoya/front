@@ -7,6 +7,7 @@ import { User } from '../types';
 import { mockPins, mockInquiries, Inquiry } from '../lib/mockData';
 import ProcessBusinessRequestScreen from './ProcessBusinessRequestScreen';
 import { AdminDashboardScreen } from './AdminDashboardScreen';
+import { AdminDashboardGraphScreen } from './AdminDashboardGraphScreen';
 import { 
   Users, 
   AlertTriangle, 
@@ -108,6 +109,24 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
       toast.success('問い合わせを削除しました');
     }
   };
+
+  const weeklyActivityData = [
+  { date: '10/28', users: 720, posts: 45, reactions: 156 },
+  { date: '10/29', users: 780, posts: 52, reactions: 189 },
+  { date: '10/30', users: 810, posts: 48, reactions: 201 },
+  { date: '10/31', users: 845, posts: 67, reactions: 234 },
+  { date: '11/01', users: 890, posts: 71, reactions: 267 },
+  { date: '11/02', users: 920, posts: 63, reactions: 298 },
+  { date: '11/03', users: 856, posts: 58, reactions: 315 },
+];
+
+const genreDistribution = [
+  { name: 'グルメ', value: 2, color: '#EF4444' },
+  { name: 'イベント', value: 1, color: '#F59E0B' },
+  { name: '景色', value: 1, color: '#10B981' },
+  { name: 'お店', value: 1, color: '#3B82F6' },
+  { name: '緊急情報', value: 1, color: '#8B5CF6' },
+];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -243,11 +262,23 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
         <div className="p-8">
           {/* 概要タブ */}
           {activeTab === 'overview' && (
+            <>
             <AdminDashboardScreen
               pendingReportsCount={systemStats.pendingReports} 
               businessApplicationsCount={businessApplications.length} 
             />
+            {/* グラフ */}
+            <AdminDashboardGraphScreen
+              weeklyActivityData={weeklyActivityData} 
+              genreDistribution={genreDistribution} 
+            />
+            </>
+
           )}
+
+          
+
+
 
           {/* 通報管理タブ */}
           {activeTab === 'reports' && (

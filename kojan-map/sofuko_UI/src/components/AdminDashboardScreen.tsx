@@ -21,25 +21,6 @@ export function AdminDashboardScreen({ pendingReportsCount, businessApplications
     pendingReports: pendingReportsCount,
   };
 
-  // モック
-  const weeklyActivityData = [
-    { date: '10/28', users: 720, posts: 45, reactions: 156 },
-    { date: '10/29', users: 780, posts: 52, reactions: 189 },
-    { date: '10/30', users: 810, posts: 48, reactions: 201 },
-    { date: '10/31', users: 845, posts: 67, reactions: 234 },
-    { date: '11/01', users: 890, posts: 71, reactions: 267 },
-    { date: '11/02', users: 920, posts: 63, reactions: 298 },
-    { date: '11/03', users: 856, posts: 58, reactions: 315 },
-  ];
-
-  const genreDistribution = [
-    { name: 'グルメだよ', value: 2, color: '#EF4444' },
-    { name: 'イベント', value: 1, color: '#F59E0B' },
-    { name: '景色', value: 1, color: '#10B981' },
-    { name: 'お店', value: 1, color: '#3B82F6' },
-    { name: '緊急情報', value: 1, color: '#8B5CF6' },
-  ];
-
   return (
     <div className="space-y-6 max-w-7xl">
       {/* 統計カードセクション */}
@@ -134,63 +115,8 @@ export function AdminDashboardScreen({ pendingReportsCount, businessApplications
           </CardContent>
         </Card>
       </div>
-
-      {/* グラフエリア */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 shadow-xl border-slate-200">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <BarChart3 className="w-5 h-5 mr-2 text-blue-600" />
-              週間アクティビティ推移
-            </CardTitle>
-            <CardDescription>ユーザー活動とコンテンツ投稿の推移</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={weeklyActivityData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="posts" fill="#3b82f6" name="新規投稿" radius={[8, 8, 0, 0]} />
-                <Bar dataKey="reactions" fill="#8b5cf6" name="リアクション" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-xl border-slate-200">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Eye className="w-5 h-5 mr-2 text-purple-600" />
-              ジャンル別投稿
-            </CardTitle>
-            <CardDescription>カテゴリー分布</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={genreDistribution}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={(entry) => entry.name}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {genreDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }
+
+      
