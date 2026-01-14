@@ -9,12 +9,12 @@ import {
   Calendar, 
   CreditCard, 
   BarChart3,
-  MapPin,
   Building2,
   Clock
 } from 'lucide-react';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { genreColors, genreLabels } from '../lib/mockData';
+import { BusinessDashboardGraphScreen } from './BusinessDashboardGraphScreen';
+import { BusinessDisplayTopReactions } from './BusinessDisplayTopReactions';
 
 interface BusinessDashboardProps {
   user: User;
@@ -190,100 +190,24 @@ export function BusinessDashboard({ user, pins, onPinClick }: BusinessDashboardP
                 </Card>
               </div>
 
-              {/* グラフ */}
+              {/* グラフエリア */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* 週間推移 */}
-                <Card className="shadow-xl border-slate-200">
-                  <CardHeader>
-                    <CardTitle>週間推移</CardTitle>
-                    <CardDescription>リアクション数と閲覧数の推移</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={weeklyData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="reactions" stroke="#ef4444" name="リアクション" />
-                        <Line type="monotone" dataKey="views" stroke="#3b82f6" name="閲覧数" />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
+                {/* 週間推移を切り出したコンポーネントに差し替え */}
+                <BusinessDashboardGraphScreen data={weeklyData} />
 
-                {/* ジャンル別統計 */}
-                <Card className="shadow-xl border-slate-200">
-                  <CardHeader>
-                    <CardTitle>ジャンル別投稿数</CardTitle>
-                    <CardDescription>投稿のジャンル分布</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={genreStatsArray}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="genre" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="count" fill="#8b5cf6" name="投稿数" />
-                        <Bar dataKey="reactions" fill="#ef4444" name="リアクション" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
+                {/* ジャンル別統計 (不要になった) */}
+                {/* 人気投稿 (以前のジャンル別投稿のところに移動)*/}
+                <BusinessDisplayTopReactions 
+                  pins={pins} 
+                  onPinClick={onPinClick} 
+                />
               </div>
 
-              {/* 人気投稿 */}
-              <Card className="shadow-xl border-slate-200">
-                <CardHeader>
-                  <CardTitle>人気投稿 Top 5</CardTitle>
-                  <CardDescription>リアクション数が多い投稿</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {topPosts.length === 0 ? (
-                    <p className="text-slate-500 text-center py-8">まだ投稿がありません</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {topPosts.map((pin, index) => (
-                        <button
-                          key={pin.id}
-                          onClick={() => onPinClick(pin)}
-                          className="w-full p-4 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-left"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-start space-x-3 flex-1">
-                              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white">
-                                {index + 1}
-                              </div>
-                              <div className="flex-1">
-                                <div className="flex items-center space-x-2 mb-1">
-                                  <h4>{pin.title}</h4>
-                                  <Badge style={{ backgroundColor: genreColors[pin.genre] }}>
-                                    {genreLabels[pin.genre]}
-                                  </Badge>
-                                </div>
-                                <p className="text-sm text-slate-600 line-clamp-1">{pin.description}</p>
-                              </div>
-                            </div>
-                            <div className="text-right ml-4">
-                              <div className="flex items-center text-red-500">
-                                <Heart className="w-4 h-4 mr-1" />
-                                <span>{pin.reactions}</span>
-                              </div>
-                              <div className="flex items-center text-blue-500 text-sm mt-1">
-                                <Eye className="w-3 h-3 mr-1" />
-                                <span>{pin.viewCount || 0}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              {/* 人気投稿 
+              <BusinessDisplayTopReactions 
+                pins={pins} 
+                onPinClick={onPinClick} 
+              />*/}
             </div>
           )}
 
